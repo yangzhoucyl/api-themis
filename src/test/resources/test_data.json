@@ -1,0 +1,52 @@
+{
+  "sourceCode": "crisps-user",
+  "data": [
+    {
+      "licenseNo": "testlicenseNo",
+      "provinceCode": "510000000000",
+      "cityCode": "510100000000",
+      "companyName": "",
+      "businessScope": "计算机软件",
+      "businessIsForever": "1",
+      "businessEndTime": "2021-09-09",
+      "legalPersonName": "",
+      "businessStartTime": "2020-01-01",
+      "companyId": "532534022919623",
+      "areaCode": "510105000000",
+      "addressDetail": "",
+      "cityName": "成都市",
+      "areaName": "青羊区",
+      "openAccType": "fugiat proident exercitation nisi",
+      "provinceName": "四川省",
+      "merchantNo": "aliquip Ut dolor",
+      "array1": [
+        {
+          "array2": [
+            {
+              "companyId": "532534022919623",
+              "array3": [
+                {
+                  "companyId": "532534022919623"
+                }
+              ]
+            },
+            {
+              "companyId": "532534022919623",
+              "array3": [
+                {
+                  "companyId": "532534022919623"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "one_param_arr": [
+      "123",
+      "124"
+  ],
+
+  "requestNo": "SYNC202103091103"
+}

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.themis.check.dao.CheckParameterConfigMapper">
+  <resultMap id="BaseResultMap" type="org.themis.check.entity.CheckParameterConfig">
+    <!--@mbg.generated-->
+    <id column="config_id" jdbcType="BIGINT" property="configId" />
+    <result column="route_config_id" jdbcType="BIGINT" property="routeConfigId" />
+    <result column="param_name" jdbcType="VARCHAR" property="paramName" />
+    <result column="check_rule" jdbcType="VARCHAR" property="checkRule" />
+    <result column="pattern" jdbcType="VARCHAR" property="pattern" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="message" jdbcType="VARCHAR" property="message"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    config_id, route_config_id, param_name, check_rule, pattern, create_time, update_time, 
+    create_user, update_user,message
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from check_parameter_config
+    where config_id = #{configId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from check_parameter_config
+    where config_id = #{configId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.themis.check.entity.CheckParameterConfig">
+    <!--@mbg.generated-->
+    insert into check_parameter_config (config_id, route_config_id, param_name, 
+      check_rule, pattern, create_time, 
+      update_time, create_user, update_user,message
+      )
+    values (#{configId,jdbcType=BIGINT}, #{routeConfigId,jdbcType=BIGINT}, #{paramName,jdbcType=VARCHAR}, 
+      #{checkRule,jdbcType=VARCHAR}, #{pattern,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR},
+      #{message,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.themis.check.entity.CheckParameterConfig">
+    <!--@mbg.generated-->
+    insert into check_parameter_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="configId != null">
+        config_id,
+      </if>
+      <if test="routeConfigId != null">
+        route_config_id,
+      </if>
+      <if test="paramName != null">
+        param_name,
+      </if>
+      <if test="checkRule != null">
+        check_rule,
+      </if>
+      <if test="pattern != null">
+        pattern,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="configId != null">
+        #{configId,jdbcType=BIGINT},
+      </if>
+      <if test="routeConfigId != null">
+        #{routeConfigId,jdbcType=BIGINT},
+      </if>
+      <if test="paramName != null">
+        #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkRule != null">
+        #{checkRule,jdbcType=VARCHAR},
+      </if>
+      <if test="pattern != null">
+        #{pattern,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.themis.check.entity.CheckParameterConfig">
+    <!--@mbg.generated-->
+    update check_parameter_config
+    <set>
+      <if test="routeConfigId != null">
+        route_config_id = #{routeConfigId,jdbcType=BIGINT},
+      </if>
+      <if test="paramName != null">
+        param_name = #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkRule != null">
+        check_rule = #{checkRule,jdbcType=VARCHAR},
+      </if>
+      <if test="pattern != null">
+        pattern = #{pattern,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null and message != ''">
+        message = #{message,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where config_id = #{configId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.themis.check.entity.CheckParameterConfig">
+    <!--@mbg.generated-->
+    update check_parameter_config
+    set route_config_id = #{routeConfigId,jdbcType=BIGINT},
+      param_name = #{paramName,jdbcType=VARCHAR},
+      check_rule = #{checkRule,jdbcType=VARCHAR},
+      pattern = #{pattern,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      message = #{message,jdbcType=VARCHAR}
+    where config_id = #{configId,jdbcType=BIGINT}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update check_parameter_config
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="route_config_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.routeConfigId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="param_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.paramName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="check_rule = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.checkRule,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="pattern = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.pattern,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.updateTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="create_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.createUser,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="update_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when config_id = #{item.configId,jdbcType=BIGINT} then #{item.updateUser,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="message = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when message = #{item.message,jdbcType=BIGINT} then #{item.message,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where config_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.configId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into check_parameter_config
+    (config_id, route_config_id, param_name, check_rule, pattern, create_time, update_time, 
+      create_user, update_user, message)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.configId,jdbcType=BIGINT}, #{item.routeConfigId,jdbcType=BIGINT}, #{item.paramName,jdbcType=VARCHAR}, 
+        #{item.checkRule,jdbcType=VARCHAR}, #{item.pattern,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, 
+        #{item.updateTime,jdbcType=TIMESTAMP}, #{item.createUser,jdbcType=VARCHAR}, #{item.updateUser,jdbcType=VARCHAR},
+        #{item.message,jdbcType=VARCHAR}
+        )
+    </foreach>
+  </insert>
+</mapper>
