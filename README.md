@@ -14,12 +14,12 @@
 ### 如何使用
 - 引入依赖
   <dependency>
-      <groupId>net.dgg.bank</groupId>
-      <artifactId>bank-themis</artifactId>
+      <groupId>org.themis</groupId>
+      <artifactId>themis-verify</artifactId>
       <version>1.0.0-SNAPSHOT</version>
   </dependency>
-- 本地bootstrap.yml配置文件根节点新增paramCheck.filter: true开启参数拦截配置。
-- 启动类加入注解@MapperScan({"net.dgg.bank.dao"})  
+- application.yml配置文件根节点新增themis.verify.interceptor: true开启参数拦截配置。
+- 启动类加入注解@MapperScan({"org.themis.check"})  
 - 启动项目后会自动在数据库创建check_route_config、及check_parameter_config配置表:
     check_route_config: 储存需要校验的接口及校验类型.
     check_parameter_config: 储存校验接口参数的具体校验规则.
@@ -44,7 +44,7 @@
 
 ##### 初始化时
     Themis在springboot启动时会根据配置文件配置的filter情况决定是否开启参数拦截校验,
-        在开启校验配置时会初始化配置表里的规则并加入本地缓存对象[CheckRuleSingleton.class](http://172.16.0.25/bank/themis/blob/master/src/main/java/net/dgg/bank/utils/check/CheckRuleSingleton.java)
+        在开启校验配置时会初始化配置表里的规则并加入本地缓存对象[CheckRuleSingleton.class]
         CheckRuleSingleton.class使用ConcurrentHashMap存储所有规则数据并根据url后缀进行分组,使用url作为规则匹配key,
         由于CheckRuleSingleton使用单例模式创建因此不必担心重复创建对象造成的额外内存开销。
 
