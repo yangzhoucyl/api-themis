@@ -18,7 +18,7 @@
       <artifactId>themis-verify</artifactId>
       <version>1.0.0-SNAPSHOT</version>
   </dependency>
-- 本地bootstrap.yml配置文件根节点新增paramCheck.filter: true开启参数拦截配置。
+- application.yml配置文件根节点新增themis.verify.interceptor: true开启参数拦截配置。
 - 启动类加入注解@MapperScan({"org.themis.check"})  
 - 启动项目后会自动在数据库创建check_route_config、及check_parameter_config配置表:
     check_route_config: 储存需要校验的接口及校验类型.
