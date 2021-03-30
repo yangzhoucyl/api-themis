@@ -82,4 +82,5 @@ public interface CheckParameterConfigMapper {
     })
     List<RuleConfigModel> listRulesByConfigId(Long configId);
 
+
 }

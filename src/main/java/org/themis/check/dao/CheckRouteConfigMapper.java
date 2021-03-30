@@ -78,16 +78,35 @@ public interface CheckRouteConfigMapper {
      */
     @Select(value = "select * from check_route_config")
     @Results({
-            @Result(column="config_id",property="configId"),
-            @Result(column="domain",property="domain"),
-            @Result(column="route",property="route"),
-            @Result(column="name",property="name"),
-            @Result( column="status",property="status"),
-            @Result( column="process_type",property="processType"),
-            @Result( column="type_val",property="typeVal"),
-            @Result(property = "rules", column = "config_id",many = @Many(select = "org.themis.check.dao.CheckParameterConfigMapper.listRulesByConfigId"))
+            @Result(column = "config_id", property = "configId"),
+            @Result(column = "domain", property = "domain"),
+            @Result(column = "route", property = "route"),
+            @Result(column = "name", property = "name"),
+            @Result(column = "status", property = "status"),
+            @Result(column = "process_type", property = "processType"),
+            @Result(column = "type_val", property = "typeVal"),
+            @Result(property = "rules", column = "config_id", many = @Many(select = "org.themis.check.dao.CheckParameterConfigMapper.listRulesByConfigId"))
     })
     List<CheckRulesConfigModel> findAllRouteAndRule();
+
+
+    /**
+     * 查询所有校验规则 根据路径
+     * @param route 校验路径
+     * @return
+     */
+    @Select(value = "select * from check_route_config where route = #{route} ")
+    @Results({
+            @Result(column = "config_id", property = "configId"),
+            @Result(column = "domain", property = "domain"),
+            @Result(column = "route", property = "route"),
+            @Result(column = "name", property = "name"),
+            @Result(column = "status", property = "status"),
+            @Result(column = "process_type", property = "processType"),
+            @Result(column = "type_val", property = "typeVal"),
+            @Result(property = "rules", column = "config_id", many = @Many(select = "org.themis.check.dao.CheckParameterConfigMapper.listRulesByConfigId"))
+    })
+    List<CheckRulesConfigModel> findAllRouteAndRuleByRoute(@Param("route") String route);
 
 
     List<CheckRulesConfigModel> findAllByRoute(@Param("route") String route);
@@ -111,7 +130,7 @@ public interface CheckRouteConfigMapper {
     /**
      * 初始化路由表
      */
-    @Select(value="create table if not exists `check_route_config` (" +
+    @Select(value = "create table if not exists `check_route_config` (" +
             "            `config_id` bigint(20) not null primary key auto_increment," +
             "            `domain` varchar(255) default null," +
             "            `route` varchar(255) not null comment '校验路径'," +

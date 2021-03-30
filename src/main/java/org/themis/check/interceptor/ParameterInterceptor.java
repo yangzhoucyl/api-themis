@@ -3,8 +3,10 @@ package org.themis.check.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
+import org.themis.check.dao.CheckRouteConfigMapper;
 import org.themis.check.utils.HttpRequestUtils;
 import org.themis.check.utils.check.CheckRuleSingleton;
 import org.themis.check.utils.check.CheckRulesConfigModel;
@@ -17,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -37,26 +41,31 @@ import java.util.regex.Pattern;
 @Component
 public class ParameterInterceptor implements HandlerInterceptor {
 
-    @Value("${paramCheck.filter}")
+    @Value("${themis.verify.interceptor}")
     private boolean isRequestFilter;
+
+    @Resource
+    private CheckRouteConfigMapper routeConfigMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (isRequestFilter){
             String requestUrl = request.getRequestURI();
             // 获取校验缓存
-            ConcurrentHashMap<String, List<CheckRulesConfigModel>> rules = CheckRuleSingleton.getInstance().getRules();
+            Cache<String, List<CheckRulesConfigModel>> caches = CheckRuleSingleton.getInstance().getRules();
             // 如果不存在此路径校验方法
-            if ((rules.get(requestUrl) == null || rules.get(requestUrl).isEmpty())) {
+            List<CheckRulesConfigModel> rules = caches.get(requestUrl, () ->
+                    routeConfigMapper.findAllRouteAndRuleByRoute(requestUrl));
+            if ((rules) == null || rules.isEmpty()) {
                 return true;
             }
             JSON json = HttpRequestUtils.getRequestBodyJson(request);
             log.info("外部请求进入系统,匹配到Api校验规则: [{}],请求参数: [{}]",requestUrl ,JSONObject.toJSONString(json));
             if (json instanceof JSONArray){
-                requestParameterCheck(json, request);
+                requestParameterCheck(json, rules);
             }else {
                 Map<String, Object> params = JSONObject.toJavaObject(json, Map.class);
-                requestParameterCheck(params, request);
+                requestParameterCheck(params, rules);
             }
         }
         // 放行接口
@@ -75,23 +84,20 @@ public class ParameterInterceptor implements HandlerInterceptor {
 
     /**
      * 对象校验
-     * @param requestParameters
-     * @param request
+     * @param requestParameters 请求参数
+     * @param rules 请求对象
      */
-    public static void requestParameterCheck(Map<String, Object> requestParameters, HttpServletRequest request) {
-        String requestUrl = request.getRequestURI();
-        ConcurrentHashMap<String, List<CheckRulesConfigModel>> rules = CheckRuleSingleton.getInstance().getRules();
-        List<CheckRulesConfigModel> ruleList = rules.get(requestUrl);
-        ruleList.forEach(
+    public static void requestParameterCheck(Map<String, Object> requestParameters, List<CheckRulesConfigModel> rules) {
+        rules.forEach(
                 rule -> {
                     // 区分参数类型校验
-                    if (!StringUtils.isEmpty(rule.getProcessType()) && !StringUtils.isEmpty(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
-                        if (!StringUtils.isEmpty(rule.getTypeVal()) && rule.getTypeVal().equals(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
+                    if (!ObjectUtils.isEmpty(rule.getProcessType()) && !ObjectUtils.isEmpty(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
+                        if (!ObjectUtils.isEmpty(rule.getTypeVal()) && rule.getTypeVal().equals(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
                             configRuleCheck(rule, requestParameters);
                         }
                         // 默认校验 不区分参数类型
-                    } else if (!StringUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())
-                            && StringUtils.isEmpty(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
+                    } else if (!ObjectUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())
+                            && ObjectUtils.isEmpty(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
                         configRuleCheck(rule, requestParameters);
                     }
                 }
@@ -100,21 +106,14 @@ public class ParameterInterceptor implements HandlerInterceptor {
 
     /**
      * list校验
-     * @param requestParameters
-     * @param request
+     * @param requestParameters 请求参数
+     * @param rules 校验规则
      */
-    public static void requestParameterCheck(JSON requestParameters, HttpServletRequest request) {
-        String requestUrl = request.getRequestURI();
-        ConcurrentHashMap<String, List<CheckRulesConfigModel>> rules = CheckRuleSingleton.getInstance().getRules();
-        // 如果不存在此路径校验方法
-        if ((rules.get(requestUrl) == null || rules.get(requestUrl).isEmpty())) {
-            return;
-        }
-        List<CheckRulesConfigModel> ruleList = rules.get(requestUrl);
-        ruleList.forEach(
+    public static void requestParameterCheck(JSON requestParameters, List<CheckRulesConfigModel> rules) {
+        rules.forEach(
                 rule -> {
                         // 默认校验 不区分参数类型
-                     if (!StringUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())) {
+                     if (!ObjectUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())) {
                         configRuleCheck(rule, requestParameters);
                     }
                 }
@@ -122,7 +121,7 @@ public class ParameterInterceptor implements HandlerInterceptor {
     }
 
     private static void configRuleCheck(CheckRulesConfigModel rule, Map<String, Object> requestParameters) {
-        if (!StringUtils.isEmpty(rule.getProcessType())) {
+        if (!ObjectUtils.isEmpty(rule.getProcessType())) {
             if (rule.getRules().size() > 0) {
                 for (RuleConfigModel checkRule : rule.getRules()) {
                     useRuleCheckParameter(checkRule, requestParameters);
@@ -132,7 +131,7 @@ public class ParameterInterceptor implements HandlerInterceptor {
     }
 
     private static void configRuleCheck(CheckRulesConfigModel rule,JSON requestParameters) {
-        if (!StringUtils.isEmpty(rule.getProcessType())) {
+        if (!ObjectUtils.isEmpty(rule.getProcessType())) {
             if (rule.getRules().size() > 0) {
                 for (RuleConfigModel checkRule : rule.getRules()) {
                     useRuleCheckParameter(checkRule, requestParameters);
@@ -144,14 +143,14 @@ public class ParameterInterceptor implements HandlerInterceptor {
     private static void useRuleCheckParameter(RuleConfigModel ruleConfig, Map<String, Object> requestParameters) {
         // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
         JSON copyParameter = (JSON) JSON.toJSON(requestParameters);
-        if (!StringUtils.isEmpty(ruleConfig.getPattern())) {
+        if (!ObjectUtils.isEmpty(ruleConfig.getPattern())) {
             String[] paramNames = ruleConfig.getParamName().split("\\.");
             traversalParameterFromRule(copyParameter, paramNames, 0, ruleConfig);
         }
     }
     private static void useRuleCheckParameter(RuleConfigModel ruleConfig,JSON requestParameters) {
         // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
-        if (!StringUtils.isEmpty(ruleConfig.getPattern())) {
+        if (!ObjectUtils.isEmpty(ruleConfig.getPattern())) {
             String[] paramNames = ruleConfig.getParamName().split("\\.");
             traversalParameterFromRule(requestParameters, paramNames, 0, ruleConfig);
         }
@@ -165,7 +164,7 @@ public class ParameterInterceptor implements HandlerInterceptor {
      * @param ruleConfig 参数校验规则
      */
     public static void traversalParameterFromRule(JSON parameters, String[] paramNames, int paramIndex , RuleConfigModel ruleConfig) {
-        String errorMessage = StringUtils.isEmpty(ruleConfig.getMessage()) ?  paramNames[paramIndex] + "参数校验不合法": ruleConfig.getMessage();
+        String errorMessage = ObjectUtils.isEmpty(ruleConfig.getMessage()) ?  paramNames[paramIndex] + "参数校验不合法": ruleConfig.getMessage();
         List<Object> verifiedParameters = new ArrayList<>(2);
         // 获取需要校验的参数
         tobeVerifiedParamsList(parameters, paramNames, paramIndex, verifiedParameters);

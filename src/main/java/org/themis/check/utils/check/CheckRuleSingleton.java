@@ -1,5 +1,8 @@
 package org.themis.check.utils.check;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,7 +14,9 @@ public class CheckRuleSingleton {
 
     private static volatile CheckRuleSingleton checkRuleSingleton;
 
-    private ConcurrentHashMap<String, List<CheckRulesConfigModel>> rules = new ConcurrentHashMap<>();
+    private Cache<String, List<CheckRulesConfigModel>> cache = CacheBuilder.newBuilder()
+            .maximumSize(200)
+            .build();
 
     private CheckRuleSingleton(){
     }
@@ -27,11 +32,11 @@ public class CheckRuleSingleton {
         return checkRuleSingleton;
     }
 
-    public ConcurrentHashMap<String, List<CheckRulesConfigModel>> getRules() {
-        return rules;
+    public Cache<String, List<CheckRulesConfigModel>> getRules() {
+        return cache;
     }
 
     public synchronized void setRules(ConcurrentHashMap<String, List<CheckRulesConfigModel>> rules) {
-        this.rules = rules;
+        this.cache.putAll(rules);
     }
 }

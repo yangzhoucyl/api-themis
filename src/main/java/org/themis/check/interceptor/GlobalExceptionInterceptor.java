@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 public class GlobalExceptionInterceptor {
 
-    @Value("${paramCheck.verify.paramErrorCode:500}")
+    @Value("${themis.verify.param-error-code:500}")
     private int paramErrorCode;
 
     @ExceptionHandler
