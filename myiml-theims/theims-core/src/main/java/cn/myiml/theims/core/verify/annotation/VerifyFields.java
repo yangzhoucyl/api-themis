@@ -1,4 +1,4 @@
-package cn.myiml.theims.core.verify;
+package cn.myiml.theims.core.verify.annotation;
 
 import java.lang.annotation.*;
 
@@ -8,8 +8,8 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface VerifyFields {
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface VerifyFields{
 
     VerifyField[] fields() default {};
 

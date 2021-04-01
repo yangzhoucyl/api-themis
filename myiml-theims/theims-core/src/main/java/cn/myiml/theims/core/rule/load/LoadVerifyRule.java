@@ -33,4 +33,11 @@ public interface LoadVerifyRule<E> {
      */
     List<E> loadAllRuleList();
 
+
+    /**
+     * 根据对象加载规则
+     * @param loadObj 加载对象
+     * @return
+     */
+    List<E> loadRuleForObject(Object loadObj);
 }
