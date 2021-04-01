@@ -16,12 +16,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    config_id, route_config_id, param_name, check_rule, pattern, create_time, update_time, 
+    config_id, route_config_id, param_name, check_rule, pattern, create_time, update_time,
     create_user, update_user,message
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
-    select 
+    select
     <include refid="Base_Column_List" />
     from check_parameter_config
     where config_id = #{configId,jdbcType=BIGINT}
@@ -33,12 +33,12 @@
   </delete>
   <insert id="insert" parameterType="org.themis.check.entity.CheckParameterConfig">
     <!--@mbg.generated-->
-    insert into check_parameter_config (config_id, route_config_id, param_name, 
-      check_rule, pattern, create_time, 
+    insert into check_parameter_config (config_id, route_config_id, param_name,
+      check_rule, pattern, create_time,
       update_time, create_user, update_user,message
       )
-    values (#{configId,jdbcType=BIGINT}, #{routeConfigId,jdbcType=BIGINT}, #{paramName,jdbcType=VARCHAR}, 
-      #{checkRule,jdbcType=VARCHAR}, #{pattern,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{configId,jdbcType=BIGINT}, #{routeConfigId,jdbcType=BIGINT}, #{paramName,jdbcType=VARCHAR},
+      #{checkRule,jdbcType=VARCHAR}, #{pattern,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR},
       #{message,jdbcType=VARCHAR}
       )
@@ -211,12 +211,12 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into check_parameter_config
-    (config_id, route_config_id, param_name, check_rule, pattern, create_time, update_time, 
+    (config_id, route_config_id, param_name, check_rule, pattern, create_time, update_time,
       create_user, update_user, message)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.configId,jdbcType=BIGINT}, #{item.routeConfigId,jdbcType=BIGINT}, #{item.paramName,jdbcType=VARCHAR}, 
-        #{item.checkRule,jdbcType=VARCHAR}, #{item.pattern,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, 
+      (#{item.configId,jdbcType=BIGINT}, #{item.routeConfigId,jdbcType=BIGINT}, #{item.paramName,jdbcType=VARCHAR},
+        #{item.checkRule,jdbcType=VARCHAR}, #{item.pattern,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
         #{item.updateTime,jdbcType=TIMESTAMP}, #{item.createUser,jdbcType=VARCHAR}, #{item.updateUser,jdbcType=VARCHAR},
         #{item.message,jdbcType=VARCHAR}
         )

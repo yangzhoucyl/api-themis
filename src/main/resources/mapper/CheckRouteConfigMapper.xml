@@ -16,12 +16,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    config_id, `domain`, route, `name`, `status`, create_time, update_time, create_user, 
+    config_id, `domain`, route, `name`, `status`, create_time, update_time, create_user,
     update_user,process_type, type_val
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
-    select 
+    select
     <include refid="Base_Column_List" />
     from check_route_config
     where config_id = #{configId,jdbcType=BIGINT}
@@ -33,12 +33,12 @@
   </delete>
   <insert id="insert" parameterType="org.themis.check.entity.CheckRouteConfig">
     <!--@mbg.generated-->
-    insert into check_route_config (config_id, `domain`, route, 
-      `name`, `status`, create_time, 
+    insert into check_route_config (config_id, `domain`, route,
+      `name`, `status`, create_time,
       update_time, create_user, update_user,process_type, type_val
       )
-    values (#{configId,jdbcType=BIGINT}, #{domain,jdbcType=VARCHAR}, #{route,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{configId,jdbcType=BIGINT}, #{domain,jdbcType=VARCHAR}, #{route,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR},
       #{processType,jdbcType=VARCHAR}, #{typeVal,jdbcType=VARCHAR}
       )
@@ -212,12 +212,12 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into check_route_config
-    (config_id, `domain`, route, `name`, `status`, create_time, update_time, create_user, 
+    (config_id, `domain`, route, `name`, `status`, create_time, update_time, create_user,
       update_user, process_type, type_val)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.configId,jdbcType=BIGINT}, #{item.domain,jdbcType=VARCHAR}, #{item.route,jdbcType=VARCHAR}, 
-        #{item.name,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER}, #{item.createTime,jdbcType=TIMESTAMP}, 
+      (#{item.configId,jdbcType=BIGINT}, #{item.domain,jdbcType=VARCHAR}, #{item.route,jdbcType=VARCHAR},
+        #{item.name,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER}, #{item.createTime,jdbcType=TIMESTAMP},
         #{item.updateTime,jdbcType=TIMESTAMP}, #{item.createUser,jdbcType=VARCHAR}, #{item.updateUser,jdbcType=VARCHAR},
         #{item.processType,jdbcType=VARCHAR}, #{item.typeVal,jdbcType=VARCHAR})
     </foreach>
