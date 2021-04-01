@@ -1,7 +1,9 @@
 package org.themis.check.utils.check;
 
+import com.google.common.base.Splitter;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,4 +36,19 @@ public class CheckRulesConfigModel {
     private String typeVal;
 
     List<RuleConfigModel> rules;
+
+    public void setRules(List<RuleConfigModel> rules) {
+        rules.forEach(rule -> {
+            List<String[]> totalParams = new ArrayList<>();
+            Iterable<String> firstSplit = Splitter.on(',').trimResults().omitEmptyStrings().split(rule.getParamName());;
+            for (String param: firstSplit) {
+                Iterable<String> lastSplits = Splitter.on('.').trimResults().omitEmptyStrings().split(param);
+                List<String> params = new ArrayList<>();
+                lastSplits.forEach(params::add);
+                totalParams.add(params.toArray(new String[params.size()]));
+            }
+            rule.setParamArrays(totalParams);
+        });
+        this.rules = rules;
+    }
 }

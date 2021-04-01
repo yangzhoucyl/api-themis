@@ -2,6 +2,8 @@ package org.themis.check.utils.check;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 校验规则
  * @author YangZhou
@@ -17,6 +19,12 @@ public class RuleConfigModel {
      * 参数名
      */
     private String paramName;
+
+
+    /**
+     * 参数名 数组
+     */
+    private List<String[]> paramArrays;
 
     /**
      * 校验规则

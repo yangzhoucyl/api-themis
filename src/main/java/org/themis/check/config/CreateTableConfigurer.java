@@ -1,12 +1,14 @@
 package org.themis.check.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.themis.check.dao.CheckRouteConfigMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.themis.check.utils.check.CheckRuleSingleton;
 
 import javax.annotation.Resource;
 
@@ -19,7 +21,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class CreateTableConfigurer implements ApplicationRunner {
 
-    @Value("${paramCheck.filter:false}")
+    @Value("${themis.verify.interceptor:true}")
     private Boolean filter;
 
     @Resource
@@ -35,5 +37,13 @@ public class CreateTableConfigurer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         initSqlTable();
+    }
+
+
+    @Bean
+    public CheckRuleSingleton checkRuleSingleton(){
+        CheckRuleSingleton checkRuleSingleton = CheckRuleSingleton.getInstance();
+        checkRuleSingleton.setRouteConfigMapper(checkRouteConfigMapper);
+        return checkRuleSingleton;
     }
 }

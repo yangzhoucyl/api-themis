@@ -3,23 +3,19 @@ package org.themis.check.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.themis.check.dao.CheckRouteConfigMapper;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 import org.themis.check.utils.HttpRequestUtils;
 import org.themis.check.utils.check.CheckRuleSingleton;
 import org.themis.check.utils.check.CheckRulesConfigModel;
 import org.themis.check.utils.check.PatternEnum;
 import org.themis.check.utils.check.RuleConfigModel;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,8 +23,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 
@@ -41,21 +35,19 @@ import java.util.regex.Pattern;
 @Component
 public class ParameterInterceptor implements HandlerInterceptor {
 
-    @Value("${themis.verify.interceptor}")
+    @Value("${themis.verify.interceptor:true}")
     private boolean isRequestFilter;
 
-    @Resource
-    private CheckRouteConfigMapper routeConfigMapper;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (isRequestFilter){
             String requestUrl = request.getRequestURI();
             // 获取校验缓存
-            Cache<String, List<CheckRulesConfigModel>> caches = CheckRuleSingleton.getInstance().getRules();
+
             // 如果不存在此路径校验方法
-            List<CheckRulesConfigModel> rules = caches.get(requestUrl, () ->
-                    routeConfigMapper.findAllRouteAndRuleByRoute(requestUrl));
+            List<CheckRulesConfigModel> rules = CheckRuleSingleton.getInstance().getVal(requestUrl);
             if ((rules) == null || rules.isEmpty()) {
                 return true;
             }
@@ -144,15 +136,14 @@ public class ParameterInterceptor implements HandlerInterceptor {
         // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
         JSON copyParameter = (JSON) JSON.toJSON(requestParameters);
         if (!ObjectUtils.isEmpty(ruleConfig.getPattern())) {
-            String[] paramNames = ruleConfig.getParamName().split("\\.");
-            traversalParameterFromRule(copyParameter, paramNames, 0, ruleConfig);
+            ruleConfig.getParamArrays().forEach(paramNames -> traversalParameterFromRule(copyParameter, paramNames, 0, ruleConfig));
         }
     }
     private static void useRuleCheckParameter(RuleConfigModel ruleConfig,JSON requestParameters) {
         // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
+        JSON copyParameter = (JSON) JSON.toJSON(requestParameters);
         if (!ObjectUtils.isEmpty(ruleConfig.getPattern())) {
-            String[] paramNames = ruleConfig.getParamName().split("\\.");
-            traversalParameterFromRule(requestParameters, paramNames, 0, ruleConfig);
+            ruleConfig.getParamArrays().forEach(paramNames -> traversalParameterFromRule(copyParameter, paramNames, 0, ruleConfig));
         }
     }
 
