@@ -1,6 +1,6 @@
 package cn.myiml.theims.core.rule.load;
 
-import cn.myiml.theims.core.model.CheckRulesConfigModel;
+import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import com.google.common.cache.Cache;
 
 import java.util.List;

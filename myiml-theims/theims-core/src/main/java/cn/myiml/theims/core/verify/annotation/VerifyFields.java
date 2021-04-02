@@ -11,6 +11,6 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface VerifyFields{
 
-    VerifyField[] fields() default {};
+    VerifyField[] fields();
 
 }

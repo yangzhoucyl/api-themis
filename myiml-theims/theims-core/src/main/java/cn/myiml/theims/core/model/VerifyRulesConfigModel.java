@@ -11,7 +11,7 @@ import java.util.List;
  * @author YangZhou
  */
 @Data
-public class CheckRulesConfigModel {
+public class VerifyRulesConfigModel {
 
     private Long configId;
 
