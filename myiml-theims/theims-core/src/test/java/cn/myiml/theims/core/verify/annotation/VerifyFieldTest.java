@@ -15,15 +15,24 @@ import static org.junit.Assert.assertTrue;
 
 public class VerifyFieldTest {
 
+    @VerifyField(names = {"paramName", "checkRule"}, pattern = PatternEnum.REGULAR)
+    public void annotationVerifyFieldTest() {
+
+    }
+    @VerifyFields(fields = {@VerifyField(names = {"paramName", "checkRule"}, pattern = PatternEnum.REGULAR)})
+    public void annotationVerifyFieldsTest(){
+
+    }
+
     @Test
-    public void testAnnotationVerifyField(){
+    public void testAnnotationVerifyField() {
         Class clazz = VerifyRuleSingleton.getInstance().getClass();
         List<VerifyField> verifyFields = new ArrayList<>();
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             Annotation[] annotations = method.getAnnotations();
             for (Annotation annotation : annotations) {
-                if (annotation instanceof VerifyField){
+                if (annotation instanceof VerifyField) {
                     verifyFields.add((VerifyField) annotation);
                 }
             }
@@ -32,10 +41,20 @@ public class VerifyFieldTest {
     }
 
     @Test
-    public void testAnnotationVerifyFieldAddToCache(){
+    public void testAnnotationVerifyFieldAddToCache() {
+        Class clazz = VerifyRuleSingleton.getInstance().getClass();
+        List<VerifyField> verifyFields = new ArrayList<>();
+        Method[] methods = clazz.getMethods();
+        for (Method method : methods) {
+            Annotation[] annotations = method.getAnnotations();
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof VerifyField) {
+                    verifyFields.add((VerifyField) annotation);
+                }
+            }
+        }
 
     }
-
 
 
 }

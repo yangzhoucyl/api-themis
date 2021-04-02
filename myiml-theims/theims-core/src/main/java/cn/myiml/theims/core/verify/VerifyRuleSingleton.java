@@ -53,7 +53,6 @@ public class VerifyRuleSingleton {
        return cache.get(key, () -> addCache(key, loadVerifyRule));
     }
 
-    @VerifyField(names = {"paramName",  "checkRule"},pattern = PatternEnum.REGULAR)
     public List<VerifyRulesConfigModel> addCache(String route, LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule){
         List<VerifyRulesConfigModel> rulesConfigModels = loadVerifyRule.loadRule(route);
         if (rulesConfigModels.isEmpty()){
