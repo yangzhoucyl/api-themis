@@ -29,4 +29,7 @@ public @interface VerifyField {
 
     PatternEnum pattern() default DEFAULT;
 
+
+
+
 }
