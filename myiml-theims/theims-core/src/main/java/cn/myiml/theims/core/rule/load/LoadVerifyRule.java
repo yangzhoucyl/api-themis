@@ -17,7 +17,7 @@ public interface LoadVerifyRule<E> {
      * @param routeName routeName
      * @return
      */
-    List<E> loadRule(String routeName);
+    ConcurrentHashMap<String,List<E>> loadRule(String routeName);
 
 
     /**
@@ -39,5 +39,5 @@ public interface LoadVerifyRule<E> {
      * @param loadObj 加载对象
      * @return
      */
-    List<E> loadRuleForObject(Object loadObj);
+    ConcurrentHashMap<String,List<E>> loadRuleForObject(Object loadObj);
 }
