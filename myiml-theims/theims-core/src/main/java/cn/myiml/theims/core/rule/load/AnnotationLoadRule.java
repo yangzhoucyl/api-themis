@@ -7,6 +7,7 @@ import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import cn.myiml.theims.core.verify.annotation.VerifyField;
 import cn.myiml.theims.core.verify.annotation.VerifyFields;
 import com.google.common.base.Splitter;
+import lombok.SneakyThrows;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,6 +31,7 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
      * @return ConcurrentHashMap<String,List<VerifyRulesConfigModel>> key为方法全限定名
      * @since 1.0.0
      */
+    @SneakyThrows
     @Override
     public ConcurrentHashMap<String,List<VerifyRulesConfigModel>> loadRule(String routeName) {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -43,8 +45,10 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
                 Class clazz = classLoader.loadClass(clazzRoute);
                 Method method = clazz.getMethod(methodName);
                 return this.loadRuleForObject(method);
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new ClassNotFoundException("class:" + clazzRoute + " not fund");
+            } catch (NoSuchMethodException e) {
+                throw new NoSuchMethodException("method:" + methodName + " not fund");
             }
         }
         return null;
@@ -68,14 +72,17 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
      */
     @Override
     public ConcurrentHashMap<String,List<VerifyRulesConfigModel>> loadRuleForObject(Object loadObj) {
-        Method method = (Method) loadObj;
-        Annotation[] annotations = method.getAnnotations();
-        List<RuleConfigModel> configModel = loadRulesByAnnotationArrays(annotations);
-        String routeName = method.getDeclaringClass().getName() + "&" + method.getName();
-        List<VerifyRulesConfigModel> configs = createRulesConfigModel(configModel, routeName);
-        ConcurrentHashMap<String,List<VerifyRulesConfigModel>> configMap = new ConcurrentHashMap<>();
-        configMap.put(routeName, configs);
-        return configMap;
+        if (loadObj instanceof Method){
+            Method method = (Method) loadObj;
+            Annotation[] annotations = method.getAnnotations();
+            List<RuleConfigModel> configModel = loadRulesByAnnotationArrays(annotations);
+            String routeName = method.getDeclaringClass().getName() + "&" + method.getName();
+            List<VerifyRulesConfigModel> configs = createRulesConfigModel(configModel, routeName);
+            ConcurrentHashMap<String,List<VerifyRulesConfigModel>> configMap = new ConcurrentHashMap<>();
+            configMap.put(routeName, configs);
+            return configMap;
+        }
+        return null;
     }
 
     /**
