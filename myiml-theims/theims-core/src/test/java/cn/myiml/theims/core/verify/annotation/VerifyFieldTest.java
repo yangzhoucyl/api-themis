@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class VerifyFieldTest {
 
@@ -25,9 +24,13 @@ public class VerifyFieldTest {
 
     }
 
+    public void annotationVerifyFieldsTestNoAnnotation(){
+
+    }
+
     @Test
     public void testAnnotationVerifyField() {
-        Class clazz = new VerifyFieldTest().getClass();
+        Class<? extends Object> clazz = new VerifyFieldTest().getClass();
         List<VerifyField> verifyFields = new ArrayList<>();
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
@@ -38,7 +41,7 @@ public class VerifyFieldTest {
                 }
             }
         }
-        assertTrue(verifyFields.size() == 1);
+        assertEquals(1, verifyFields.size());
     }
 
     @Test

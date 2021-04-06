@@ -1,9 +1,7 @@
 package cn.myiml.theims.core.verify;
 
-import cn.myiml.theims.core.enums.PatternEnum;
 import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import cn.myiml.theims.core.rule.load.LoadVerifyRule;
-import cn.myiml.theims.core.verify.annotation.VerifyField;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.SneakyThrows;
@@ -46,6 +44,8 @@ public class VerifyRuleSingleton {
     public synchronized void setRules(LoadVerifyRule<VerifyRulesConfigModel> verifyRule) {
         this.cache.putAll(verifyRule.loadAllRules());
     }
+
+
 
 
     @SneakyThrows

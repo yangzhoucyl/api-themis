@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
  */
 public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel>{
 
-    private final int ROUTE_SPLIT_SIZE = 2;
-
     /**
      * 根据方法全限定名获取校验规则
      * @param routeName routeName 方法全限定名 必须是 类全限定名 + "&" + 方法名
@@ -38,11 +36,12 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
         Iterable<String> routes = Splitter.on('&').trimResults().omitEmptyStrings().split(routeName);
         List<String> routeNames = new ArrayList<>();
         routes.forEach(routeNames::add);
-        if (routeNames.size() == ROUTE_SPLIT_SIZE ){
+        int routeSplitSize = 2;
+        if (routeNames.size() == routeSplitSize){
             String clazzRoute = routeNames.get(0);
             String methodName = routeNames.get(1);
             try {
-                Class clazz = classLoader.loadClass(clazzRoute);
+                Class<? extends Object> clazz = classLoader.loadClass(clazzRoute);
                 Method method = clazz.getMethod(methodName);
                 return this.loadRuleForObject(method);
             } catch (ClassNotFoundException e) {
@@ -78,7 +77,7 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
             List<RuleConfigModel> configModel = loadRulesByAnnotationArrays(annotations);
             String routeName = method.getDeclaringClass().getName() + "&" + method.getName();
             List<VerifyRulesConfigModel> configs = createRulesConfigModel(configModel, routeName);
-            ConcurrentHashMap<String,List<VerifyRulesConfigModel>> configMap = new ConcurrentHashMap<>();
+            ConcurrentHashMap<String,List<VerifyRulesConfigModel>> configMap = new ConcurrentHashMap<>(8);
             configMap.put(routeName, configs);
             return configMap;
         }
@@ -141,11 +140,11 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
                 Iterable<String> lastSplits = Splitter.on('.').trimResults().omitEmptyStrings().split(param);
                 List<String> params = new ArrayList<>();
                 lastSplits.forEach(params::add);
-                totalParams.add(params.toArray(new String[params.size()]));
+                totalParams.add(params.toArray(new String[0]));
             }
             ruleConfigModel.setParamArrays(totalParams);
             ruleConfigModel.setCheckRule(verifyField.rule());
-            String paramNames = Arrays.stream(verifyField.names()).reduce((s, s2) -> s + "," + s2).get();
+            String paramNames = Arrays.stream(verifyField.names()).reduce((s, s2) -> s + "," + s2).orElse("");
             ruleConfigModel.setParamName(paramNames);
             ruleConfigModel.setPattern(verifyField.pattern().name());
             rules.add(ruleConfigModel);
