@@ -3,6 +3,7 @@ package cn.myiml.theims.core.verify;
 import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import cn.myiml.theims.core.rule.load.AnnotationLoadRule;
 import cn.myiml.theims.core.rule.load.LoadVerifyRule;
+import cn.myiml.theims.core.verify.cache.VerifyRuleSingleton;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

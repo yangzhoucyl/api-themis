@@ -1,4 +1,4 @@
-package cn.myiml.theims.core.verify;
+package cn.myiml.theims.core.verify.cache;
 
 import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import com.google.common.cache.Cache;
