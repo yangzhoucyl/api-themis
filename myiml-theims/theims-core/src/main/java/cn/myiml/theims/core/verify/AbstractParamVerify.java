@@ -17,7 +17,15 @@ import java.util.regex.Pattern;
 /**
  * @author yangzhou
  */
-public abstract class ParamVerify {
+public abstract class AbstractParamVerify {
+
+
+    /**
+     * 校验抽象方法
+     * @param args 参数
+     * @param route 匹配路径
+     */
+    public abstract void verify(Object args, String route);
 
     /**
      * 对象校验
@@ -100,7 +108,7 @@ public abstract class ParamVerify {
      * @param ruleConfig 参数校验规则
      */
     protected static void traversalParameterFromRule(JSON parameters, String[] paramNames, int paramIndex , RuleConfigModel ruleConfig) {
-        String errorMessage = ObjectUtils.isEmpty(ruleConfig.getMessage()) ?  paramNames[paramIndex] + "参数校验不合法": ruleConfig.getMessage();
+        String errorMessage = ObjectUtils.isEmpty(ruleConfig.getMessage()) ?  paramNames[paramIndex] + " is Illegal parameter": ruleConfig.getMessage();
         List<Object> verifiedParameters = new ArrayList<>(2);
         // 获取需要校验的参数
         tobeVerifiedParamsList(parameters, paramNames, paramIndex, verifiedParameters);
