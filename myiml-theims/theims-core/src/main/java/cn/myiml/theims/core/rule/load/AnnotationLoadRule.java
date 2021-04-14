@@ -42,7 +42,16 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
             String methodName = routeNames.get(1);
             try {
                 Class<? extends Object> clazz = classLoader.loadClass(clazzRoute);
-                Method method = clazz.getMethod(methodName);
+                Method method = null;
+                Method[] methods = clazz.getDeclaredMethods();
+                for (int i = 0; i < methods.length; i++) {
+                    if (methodName.equals(methods[i].getName())){
+                        method = methods[i];
+                    }
+                }
+                if (method == null){
+                    throw new NoSuchMethodException();
+                }
                 return this.loadRuleForObject(method);
             } catch (ClassNotFoundException e) {
                 throw new ClassNotFoundException("class:" + clazzRoute + " not fund");
