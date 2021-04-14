@@ -32,7 +32,7 @@ public class AspectAnnotationVerify {
     }
 
     @Around(value = "annotationVerify()")
-    public Object annotationVerifyExecute(ProceedingJoinPoint joinPoint){
+    public Object annotationVerifyExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         // 获取方法类型
         try {
             Map<String, Object> args = getFieldsName(joinPoint);
@@ -41,12 +41,10 @@ public class AspectAnnotationVerify {
             String routeName = TypeName + "&" + methodName;
             AbstractParamVerify paramVerify = new AnnotationVerify();
             paramVerify.verify(args, routeName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return null;
+        return joinPoint.proceed();
     }
 
 
