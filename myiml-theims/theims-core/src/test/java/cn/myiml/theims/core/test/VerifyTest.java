@@ -5,6 +5,8 @@ import cn.myiml.theims.core.enums.PatternEnum;
 import cn.myiml.theims.core.verify.annotation.VerifyField;
 import org.springframework.stereotype.Component;
 
+import static cn.myiml.theims.core.enums.BasicRules.NUMBER_REG;
+
 /**
  * @author yangzhou
  */
@@ -27,5 +29,11 @@ public class VerifyTest {
         System.out.println(paramName);
         System.out.println(checkRule);
     }
+
+    @VerifyField(names = {"companyId"}, pattern = PatternEnum.REGULAR, rule = NUMBER_REG)
+    public void annotationVerifyFieldObj(QueryDepositOverviewDTO queryDeposit) {
+        System.out.println(queryDeposit);
+    }
+
 
 }
