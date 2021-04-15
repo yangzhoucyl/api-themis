@@ -1,5 +1,6 @@
 package cn.myiml.theims.core.verify;
 
+import cn.myiml.theims.core.test.QueryDepositOverviewDTO;
 import cn.myiml.theims.core.test.VerifyTest;
 import org.junit.Before;
 import org.junit.Rule;
@@ -51,7 +52,16 @@ public class AspectAnnotationVerifyTest {
         verifyTest.annotationVerifyFieldTestRegularFail("11", "xxxx");
     }
 
-
+    @Test
+    public void annotationVerifyExecuteRegulaSuccess() {
+        verifyTest.annotationVerifyFieldTestRegularFail("11", "11");
+    }
+    @Test
+    public void annotationVerifyObjExecuteRegulaSuccess() {
+        QueryDepositOverviewDTO overview = new QueryDepositOverviewDTO();
+        overview.setCompanyId(111L);
+        verifyTest.annotationVerifyFieldObj(overview);
+    }
 
 
 }
