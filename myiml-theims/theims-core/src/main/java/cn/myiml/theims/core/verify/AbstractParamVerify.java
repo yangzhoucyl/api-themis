@@ -65,6 +65,22 @@ public abstract class AbstractParamVerify {
         );
     }
 
+    /**
+     * list校验
+     * @param requestParameters 请求参数
+     * @param rules 校验规则
+     */
+    protected static void parameterVerifyDefault(Map<String, Object> requestParameters, List<VerifyRulesConfigModel> rules) {
+        rules.forEach(
+                rule -> {
+                    // 默认校验 不区分参数类型
+                    if (!ObjectUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())) {
+                        configRuleCheck(rule, requestParameters);
+                    }
+                }
+        );
+    }
+
     protected static void configRuleCheck(VerifyRulesConfigModel rule, Map<String, Object> requestParameters) {
         if (!ObjectUtils.isEmpty(rule.getProcessType())) {
             if (rule.getRules().size() > 0) {
