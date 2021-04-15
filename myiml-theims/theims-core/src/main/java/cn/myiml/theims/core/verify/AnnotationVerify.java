@@ -4,6 +4,7 @@ import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import cn.myiml.theims.core.rule.load.AnnotationLoadRule;
 import cn.myiml.theims.core.rule.load.LoadVerifyRule;
 import cn.myiml.theims.core.verify.cache.VerifyRuleSingleton;
+import com.alibaba.fastjson.JSON;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class AnnotationVerify extends AbstractParamVerify {
         if (args instanceof Map){
             LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule = new AnnotationLoadRule();
             List<VerifyRulesConfigModel> verifyRulesConfigModelList = VerifyRuleSingleton.getInstance().getVal(route, loadVerifyRule);
-            requestParameterCheck((Map)args, verifyRulesConfigModelList);
+            requestParameterCheck((JSON) JSON.toJSON(args), verifyRulesConfigModelList);
         }
     }
 }
