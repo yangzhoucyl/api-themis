@@ -1,9 +1,7 @@
 package cn.myiml.theims.core.verify;
 
-import cn.myiml.theims.core.model.VerifyRulesConfigModel;
-import cn.myiml.theims.core.rule.load.AnnotationLoadRule;
-import cn.myiml.theims.core.rule.load.LoadVerifyRule;
-import cn.myiml.theims.core.verify.cache.VerifyRuleSingleton;
+import cn.myiml.theims.core.BeanUtils;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -61,6 +59,7 @@ public class AspectAnnotationVerify {
     };
 
 
+    @SneakyThrows
     private static Map<String, Object> getFieldsName(ProceedingJoinPoint joinPoint) throws ClassNotFoundException, NoSuchMethodException {
         String classType = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
@@ -82,6 +81,9 @@ public class AspectAnnotationVerify {
         String[] parameterNames = pnd.getParameterNames(method);
         // 通过map封装参数和参数值
         Map<String, Object> paramMap = new HashMap<>(8);
+        if (args != null && args.length == 1 && args[0] instanceof Object){
+            return BeanUtils.objectToMap(args[0]);
+        }
         for (int i = 0; i < Objects.requireNonNull(parameterNames).length; i++) {
             paramMap.put(parameterNames[i], args[i]);
         }
