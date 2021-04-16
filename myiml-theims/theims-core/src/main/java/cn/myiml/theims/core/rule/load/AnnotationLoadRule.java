@@ -49,14 +49,9 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
                         method = methods[i];
                     }
                 }
-                if (method == null){
-                    throw new NoSuchMethodException();
-                }
                 return this.loadRuleForObject(method);
             } catch (ClassNotFoundException e) {
                 throw new ClassNotFoundException("class:" + clazzRoute + " not fund");
-            } catch (NoSuchMethodException e) {
-                throw new NoSuchMethodException("method:" + methodName + " not fund");
             }
         }
         return null;
@@ -80,17 +75,16 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
      */
     @Override
     public ConcurrentHashMap<String,List<VerifyRulesConfigModel>> loadRuleForObject(Object loadObj) {
+        ConcurrentHashMap<String,List<VerifyRulesConfigModel>> configMap = new ConcurrentHashMap<>(8);
         if (loadObj instanceof Method){
             Method method = (Method) loadObj;
             Annotation[] annotations = method.getAnnotations();
             List<RuleConfigModel> configModel = loadRulesByAnnotationArrays(annotations);
             String routeName = method.getDeclaringClass().getName() + "&" + method.getName();
             List<VerifyRulesConfigModel> configs = createRulesConfigModel(configModel, routeName);
-            ConcurrentHashMap<String,List<VerifyRulesConfigModel>> configMap = new ConcurrentHashMap<>(8);
             configMap.put(routeName, configs);
-            return configMap;
         }
-        return null;
+        return configMap;
     }
 
     /**
@@ -152,6 +146,7 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
                 totalParams.add(params.toArray(new String[0]));
             }
             ruleConfigModel.setParamArrays(totalParams);
+            ruleConfigModel.setMessage(verifyField.message());
             ruleConfigModel.setCheckRule(verifyField.rule());
             String paramNames = Arrays.stream(verifyField.names()).reduce((s, s2) -> s + "," + s2).orElse("");
             ruleConfigModel.setParamName(paramNames);
