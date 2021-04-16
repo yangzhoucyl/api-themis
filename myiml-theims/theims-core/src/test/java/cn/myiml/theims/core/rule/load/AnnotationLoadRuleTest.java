@@ -1,7 +1,7 @@
 package cn.myiml.theims.core.rule.load;
 
+import cn.hutool.core.lang.Assert;
 import cn.myiml.theims.core.model.VerifyRulesConfigModel;
-import com.alibaba.fastjson.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,12 +43,11 @@ public class AnnotationLoadRuleTest {
     }
 
     @Test
-    public void loadRuleWhenMethodIsNoExistentNoSuchMethodException(){
-        exception.expect(NoSuchMethodException.class);
-        exception.expectMessage("method:annotationVerifyFieldsTest1 not fund");
+    public void loadRuleWhenMethodIsNoExistentReturnResultSizeIsZero(){
         String routeName = "cn.myiml.theims.core.verify.annotation.VerifyFieldTest&annotationVerifyFieldsTest1";
         LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule = new AnnotationLoadRule();
-        loadVerifyRule.loadRule(routeName);
+        ConcurrentHashMap<String,List<VerifyRulesConfigModel>> result =  loadVerifyRule.loadRule(routeName);
+        assertEquals(0, result.size());
     }
 
     @Test
@@ -92,7 +91,7 @@ public class AnnotationLoadRuleTest {
     @Test
     public void loadRuleForObjectWhenParamTypeNotIsMethod() {
         LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule = new AnnotationLoadRule();
-        assertNull(loadVerifyRule.loadRuleForObject(new Object()));
+        assertEquals(0, loadVerifyRule.loadRuleForObject(new Object()).size());
     }
 
 }
