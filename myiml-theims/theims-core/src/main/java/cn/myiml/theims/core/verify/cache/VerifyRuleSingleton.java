@@ -55,7 +55,7 @@ public class VerifyRuleSingleton {
 
     public List<VerifyRulesConfigModel> addCache(String route, LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule){
         List<VerifyRulesConfigModel> rulesConfigModels = loadVerifyRule.loadRule(route).get(route);
-        if (rulesConfigModels.isEmpty()){
+        if (rulesConfigModels == null){
             return new ArrayList<>();
         }
         return rulesConfigModels;
