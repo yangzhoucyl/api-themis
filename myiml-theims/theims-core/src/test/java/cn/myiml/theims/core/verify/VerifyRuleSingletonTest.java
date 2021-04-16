@@ -73,10 +73,19 @@ public class VerifyRuleSingletonTest {
     }
 
     @Test
+    public void addCacheToLoadAndRoutIsNullResultSizeIsZero(){
+        String routeName = "cn.myiml.theims.core.verify.annotation.VerifyFieldTest&annotationVerifyFieldsTest1";
+        LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule = new AnnotationLoadRule();
+        List<VerifyRulesConfigModel> rulesConfigModels =  verifyRuleSingleton.addCache(routeName, loadVerifyRule);
+        assertEquals(0, rulesConfigModels.size());
+    }
+
+    @Test
     public void addCacheToList(){
         String routeName = "cn.myiml.theims.core.verify.annotation.VerifyFieldTest&annotationVerifyFieldsTest";
         List<VerifyRulesConfigModel> rulesConfigModels = new ArrayList<>();
         verifyRuleSingleton.addCache(routeName, rulesConfigModels);
         assertEquals(1, verifyRuleSingleton.getRules().size());
     }
+
 }
