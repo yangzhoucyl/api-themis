@@ -27,27 +27,6 @@ public abstract class AbstractParamVerify {
      */
     public abstract void verify(Object args, String route);
 
-    /**
-     * 对象校验
-     * @param requestParameters 请求参数
-     * @param rules 请求对象
-     */
-    protected static void requestParameterCheck(Map<String, Object> requestParameters, List<VerifyRulesConfigModel> rules) {
-        rules.forEach(
-                rule -> {
-                    // 区分参数类型校验
-                    if (!ObjectUtils.isEmpty(rule.getProcessType()) && !ObjectUtils.isEmpty(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
-                        if (!ObjectUtils.isEmpty(rule.getTypeVal()) && rule.getTypeVal().equals(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
-                            configRuleCheck(rule, requestParameters);
-                        }
-                        // 默认校验 不区分参数类型
-                    } else if (!ObjectUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())
-                            && ObjectUtils.isEmpty(requestParameters.getOrDefault(rule.getProcessType(), ""))) {
-                        configRuleCheck(rule, requestParameters);
-                    }
-                }
-        );
-    }
 
     /**
      * list校验
@@ -65,31 +44,6 @@ public abstract class AbstractParamVerify {
         );
     }
 
-    /**
-     * list校验
-     * @param requestParameters 请求参数
-     * @param rules 校验规则
-     */
-    protected static void parameterVerifyDefault(Map<String, Object> requestParameters, List<VerifyRulesConfigModel> rules) {
-        rules.forEach(
-                rule -> {
-                    // 默认校验 不区分参数类型
-                    if (!ObjectUtils.isEmpty(rule.getProcessType()) && PatternEnum.DEFAULT.name().equals(rule.getTypeVal())) {
-                        configRuleCheck(rule, requestParameters);
-                    }
-                }
-        );
-    }
-
-    protected static void configRuleCheck(VerifyRulesConfigModel rule, Map<String, Object> requestParameters) {
-        if (!ObjectUtils.isEmpty(rule.getProcessType())) {
-            if (rule.getRules().size() > 0) {
-                for (RuleConfigModel checkRule : rule.getRules()) {
-                    useRuleCheckParameter(checkRule, requestParameters);
-                }
-            }
-        }
-    }
 
     protected static void configRuleCheck(VerifyRulesConfigModel rule, JSON requestParameters) {
         if (!ObjectUtils.isEmpty(rule.getProcessType())) {
@@ -101,13 +55,6 @@ public abstract class AbstractParamVerify {
         }
     }
 
-    protected static void useRuleCheckParameter(RuleConfigModel ruleConfig, Map<String, Object> requestParameters) {
-        // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
-        JSON copyParameter = (JSON) JSON.toJSON(requestParameters);
-        if (!ObjectUtils.isEmpty(ruleConfig.getPattern())) {
-            ruleConfig.getParamArrays().forEach(paramNames -> traversalParameterFromRule(copyParameter, paramNames, 0, ruleConfig));
-        }
-    }
     protected static void useRuleCheckParameter(RuleConfigModel ruleConfig,JSON requestParameters) {
         // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
         JSON copyParameter = (JSON) JSON.toJSON(requestParameters);
@@ -167,17 +114,6 @@ public abstract class AbstractParamVerify {
         }
     }
 
-
-    protected static void patternCheck(JSONObject parameters, String[] paramNames, int paramIndex, RuleConfigModel ruleConfig, String errorMessage) {
-        if (PatternEnum.DEFAULT.equals(PatternEnum.valueOf(ruleConfig.getPattern()))) {
-            Assert.isTrue(!ObjectUtils.isEmpty(parameters.get(paramNames[paramIndex])), errorMessage);
-        } else if (PatternEnum.REGULAR.equals(PatternEnum.valueOf(ruleConfig.getPattern()))) {
-            Pattern pattern = Pattern.compile(ruleConfig.getCheckRule());
-            Assert.isTrue(!ObjectUtils.isEmpty(parameters.get(paramNames[paramIndex])), errorMessage);
-            Assert.isTrue(pattern.matcher(parameters.get(paramNames[paramIndex]).toString()).matches(),
-                    errorMessage);
-        }
-    }
     protected static void patternVerified(Object value, RuleConfigModel ruleConfig, String errorMessage) {
         if (PatternEnum.DEFAULT.equals(PatternEnum.valueOf(ruleConfig.getPattern()))) {
             Assert.isTrue(!ObjectUtils.isEmpty(value), errorMessage);
