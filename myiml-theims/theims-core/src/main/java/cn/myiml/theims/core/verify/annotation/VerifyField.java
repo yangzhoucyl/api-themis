@@ -4,6 +4,7 @@ import cn.myiml.theims.core.enums.PatternEnum;
 
 import java.lang.annotation.*;
 
+import static cn.myiml.theims.core.enums.ErrorMessage.NOT_NULL;
 import static cn.myiml.theims.core.enums.PatternEnum.DEFAULT;
 
 /**
@@ -30,6 +31,9 @@ public @interface VerifyField {
     PatternEnum pattern() default DEFAULT;
 
 
-
-
+    /**
+     * 提示信息
+     * @return
+     */
+    String message() default NOT_NULL;
 }
