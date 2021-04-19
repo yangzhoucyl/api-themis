@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static cn.myiml.theims.core.enums.BasicRules.NUMBER_REG;
 import static cn.myiml.theims.core.enums.ErrorMessage.DEFAULT;
+import static cn.myiml.theims.core.enums.ErrorMessage.NOT_NULL;
 
 /**
  * @author yangzhou
@@ -18,7 +19,7 @@ import static cn.myiml.theims.core.enums.ErrorMessage.DEFAULT;
 @Component
 public class VerifyTest {
 
-    @VerifyField(names = {"paramName", "checkRule"}, pattern = PatternEnum.REGULAR, message = DEFAULT)
+    @VerifyField(names = {"paramName", "data.checkRule"}, pattern = PatternEnum.REGULAR, message = DEFAULT)
     public  void annotationVerifyFieldTestFail(String paramName) {
         System.out.println(paramName);
     }
@@ -53,7 +54,7 @@ public class VerifyTest {
     public void annotationVerifyFieldListPrimitive(List<String> data){
     };
 
-    @VerifyField(names = {"companyId"}, pattern = PatternEnum.DEFAULT, message = DEFAULT)
+    @VerifyField(names = {"companyId"}, pattern = PatternEnum.DEFAULT, message = NOT_NULL)
     public void annotationVerifyFieldMap(Map<String, Object> data){
     };
 }
