@@ -5,9 +5,9 @@ package cn.myiml.theims.core.enums;
  */
 public class ErrorMessage {
 
-    public static final String NOT_NULL = "参数不能为空";
+    public static final String NOT_NULL = "参数{param}不能为空";
 
-    public static final String ILLEGAL = "参数不合法!";
+    public static final String ILLEGAL = "参数{param}不合法!";
 
-    public static final String DEFAULT = "";
+    public static final String DEFAULT = "{param} is Illegal parameter";
 }
