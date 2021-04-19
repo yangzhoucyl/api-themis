@@ -91,7 +91,7 @@ public class AspectAnnotationVerifyTest {
     @Test
     public void annotationVerifyFieldMapIsFalse(){
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("companyId is Illegal parameter");
+        exception.expectMessage("参数companyId不能为空");
         Map<String,Object> result = new HashMap<>();
         result.put("companyId", "");
         verifyTest.annotationVerifyFieldMap(result);
