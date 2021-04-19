@@ -1,6 +1,9 @@
 package cn.myiml.theims.core.verify;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.myiml.theims.core.enums.ErrorMessage;
 import cn.myiml.theims.core.enums.PatternEnum;
+import cn.myiml.theims.core.enums.TheimsConstants;
 import cn.myiml.theims.core.model.RuleConfigModel;
 import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import com.alibaba.fastjson.JSON;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * @author yangzhou
@@ -59,7 +63,11 @@ public abstract class AbstractParamVerify {
         // 复制一个参数出来作为校验 防止校验过程中修改原方法入参
         JSON copyParameter = (JSON) JSON.toJSON(requestParameters);
         if (!ObjectUtils.isEmpty(ruleConfig.getPattern())) {
-            ruleConfig.getParamArrays().forEach(paramNames -> traversalParameterFromRule(copyParameter, paramNames, 0, ruleConfig));
+            List<String[]> paramArrays = ruleConfig.getParamArrays();
+            Stream.iterate(0, i -> i + 1).limit(paramArrays.size()).forEach(i ->{
+                traversalParameterFromRule(copyParameter,paramArrays.get(i) , i, ruleConfig);
+            });
+//            ruleConfig.getParamArrays().forEach(paramNames -> ;
         }
     }
 
@@ -71,13 +79,14 @@ public abstract class AbstractParamVerify {
      * @param ruleConfig 参数校验规则
      */
     protected static void traversalParameterFromRule(JSON parameters, String[] paramNames, int paramIndex , RuleConfigModel ruleConfig) {
-        String errorMessage = ObjectUtils.isEmpty(ruleConfig.getMessage()) ?  paramNames[paramIndex] + " is Illegal parameter": ruleConfig.getMessage();
+        String errorMessage = ObjectUtils.isEmpty(ruleConfig.getMessage()) ? ErrorMessage.DEFAULT : ruleConfig.getMessage();
+        String paramName = ArrayUtil.join(ruleConfig.getParamArrays().get(paramIndex),".");
+        String finalErrorMessage = errorMessage.replace(TheimsConstants.ERROR_MESSAGE_RP, paramName);
         List<Object> verifiedParameters = new ArrayList<>(2);
         // 获取需要校验的参数
-        tobeVerifiedParamsList(parameters, paramNames, paramIndex, verifiedParameters);
+        tobeVerifiedParamsList(parameters, paramNames, 0, verifiedParameters);
         // 验证
-        verifiedParameters.forEach(val -> patternVerified(val, ruleConfig, errorMessage));
-
+        verifiedParameters.forEach(val -> patternVerified(val, ruleConfig, finalErrorMessage));
     }
 
     /**
@@ -123,4 +132,5 @@ public abstract class AbstractParamVerify {
             Assert.isTrue(pattern.matcher(value.toString()).matches(), errorMessage);
         }
     }
+
 }
