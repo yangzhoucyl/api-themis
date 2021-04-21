@@ -1,6 +1,7 @@
 package cn.myiml.theims.core.verify;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.myiml.theims.core.enums.ErrorMessage;
 import cn.myiml.theims.core.enums.PatternEnum;
 import cn.myiml.theims.core.enums.TheimsConstants;
@@ -81,7 +82,7 @@ public abstract class AbstractParamVerify {
     protected static void traversalParameterFromRule(JSON parameters, String[] paramNames, int paramIndex , RuleConfigModel ruleConfig) {
         String errorMessage = ObjectUtils.isEmpty(ruleConfig.getMessage()) ? ErrorMessage.DEFAULT : ruleConfig.getMessage();
         String paramName = ArrayUtil.join(ruleConfig.getParamArrays().get(paramIndex),".");
-        String finalErrorMessage = errorMessage.replace(TheimsConstants.ERROR_MESSAGE_RP, paramName);
+        String finalErrorMessage = StrUtil.format(errorMessage, paramName);
         List<Object> verifiedParameters = new ArrayList<>(2);
         // 获取需要校验的参数
         tobeVerifiedParamsList(parameters, paramNames, 0, verifiedParameters);
