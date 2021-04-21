@@ -1,6 +1,5 @@
 package cn.myiml.theims.core.rule.load;
 
-import cn.hutool.core.lang.Assert;
 import cn.myiml.theims.core.model.VerifyRulesConfigModel;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,7 +10,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AnnotationLoadRuleTest {
 
@@ -84,7 +84,7 @@ public class AnnotationLoadRuleTest {
         String routeName = "cn.myiml.theims.core.verify.annotation.VerifyFieldTest";
         String methodName = "annotationVerifyFieldsTest";
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        Class clazz = classLoader.loadClass(routeName);
+        Class<?> clazz = classLoader.loadClass(routeName);
         Method method = clazz.getMethod(methodName);
         assertEquals(1, loadVerifyRule.loadRuleForObject(method).size());
     }
