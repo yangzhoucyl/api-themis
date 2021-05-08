@@ -8,9 +8,13 @@ import cn.myiml.theims.core.verify.annotation.VerifyField;
 import cn.myiml.theims.core.verify.annotation.VerifyFields;
 import com.google.common.base.Splitter;
 import lombok.SneakyThrows;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,15 +22,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * é€šè¿‡æ³¨è§£æ–¹å¼åŠ è½½æ ¡éªŒè§„åˆ™
+ * Í¨¹ı×¢½â·½Ê½¼ÓÔØĞ£Ñé¹æÔò
  * @author yangzhou
  */
 public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel>{
 
     /**
-     * æ ¹æ®æ–¹æ³•å…¨é™å®šåè·å–æ ¡éªŒè§„åˆ™
-     * @param routeName routeName æ–¹æ³•å…¨é™å®šå å¿…é¡»æ˜¯ ç±»å…¨é™å®šå + "&" + æ–¹æ³•å
-     * @return ConcurrentHashMap<String,List<VerifyRulesConfigModel>> keyä¸ºæ–¹æ³•å…¨é™å®šå
+     * ¸ù¾İ·½·¨È«ÏŞ¶¨Ãû»ñÈ¡Ğ£Ñé¹æÔò
+     * @param routeName routeName ·½·¨È«ÏŞ¶¨Ãû ±ØĞëÊÇ ÀàÈ«ÏŞ¶¨Ãû + "&" + ·½·¨Ãû
+     * @return ConcurrentHashMap<String,List<VerifyRulesConfigModel>> keyÎª·½·¨È«ÏŞ¶¨Ãû
      * @since 1.0.0
      */
     @SneakyThrows
@@ -57,6 +61,21 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
         return null;
     }
 
+
+    @Override
+    public ConcurrentHashMap<String, List<VerifyRulesConfigModel>> loadRule(String routeName, Object object) {
+        ProceedingJoinPoint joinPoint = (ProceedingJoinPoint) object;
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();;
+        Object target = joinPoint.getTarget();
+        try {
+            Method currentMethod = target.getClass().getMethod(signature.getName(), signature.getParameterTypes());
+            return this.loadRuleForObject(currentMethod);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public ConcurrentHashMap<String, List<VerifyRulesConfigModel>> loadAllRules() {
         return new ConcurrentHashMap<>(0);
@@ -68,9 +87,9 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
     }
 
     /**
-     * æ ¹æ®æ–¹æ³•å®ä¾‹è·å–æ ¡éªŒè§„åˆ™
-     * @param loadObj è·å–æ ¡éªŒè§„åˆ™çš„æ–¹æ³•å®ä½“
-     * @return ConcurrentHashMap å…·ä½“çš„æ ¡éªŒè§„åˆ™ keyä¸ºæ–¹æ³•å…¨é™å®šå, valueä¸ºå…·ä½“æ ¡éªŒè§„åˆ™
+     * ¸ù¾İ·½·¨ÊµÀı»ñÈ¡Ğ£Ñé¹æÔò
+     * @param loadObj »ñÈ¡Ğ£Ñé¹æÔòµÄ·½·¨ÊµÌå
+     * @return ConcurrentHashMap ¾ßÌåµÄĞ£Ñé¹æÔò keyÎª·½·¨È«ÏŞ¶¨Ãû, valueÎª¾ßÌåĞ£Ñé¹æÔò
      * @since 1.0.0
      */
     @Override
@@ -88,9 +107,9 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
     }
 
     /**
-     * åˆ›å»ºæœ€ç»ˆæ ¡éªŒè§„åˆ™é›†åˆ
-     * @param configModel å…·ä½“æ ¡éªŒè§„åˆ™ ç”±loadRulesByAnnotationArraysç”Ÿæˆ
-     * @param routeName æ–¹æ³•è·¯å¾„å…¨é™å®šå
+     * ´´½¨×îÖÕĞ£Ñé¹æÔò¼¯ºÏ
+     * @param configModel ¾ßÌåĞ£Ñé¹æÔò ÓÉloadRulesByAnnotationArraysÉú³É
+     * @param routeName ·½·¨Â·¾¶È«ÏŞ¶¨Ãû
      * @return VerifyRulesConfigModel
      * @since 1.0.0
      */
@@ -107,7 +126,7 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
     }
 
     /**
-     * åˆ›å»ºå…·ä½“è§„åˆ™é›†åˆ æ ¹æ®æ³¨è§£æ•°ç»„
+     * ´´½¨¾ßÌå¹æÔò¼¯ºÏ ¸ù¾İ×¢½âÊı×é
      * @param annotations  {@link VerifyFields,VerifyField}
      * @return RuleConfigModel arrays
      * @since 1.0.0
@@ -129,7 +148,7 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
     }
 
     /**
-     * åˆ›å»ºæ ¡éªŒè§„åˆ™ æ ¹æ®ä¼ å…¥æ³¨è§£ {@link VerifyField}
+     * ´´½¨Ğ£Ñé¹æÔò ¸ù¾İ´«Èë×¢½â {@link VerifyField}
      * @param verifyFieldList Annotation VerifyField Arrays
      * @return RuleConfigModel
      * @since 1.0.0
@@ -146,7 +165,11 @@ public class AnnotationLoadRule implements LoadVerifyRule<VerifyRulesConfigModel
                 totalParams.add(params.toArray(new String[0]));
             }
             ruleConfigModel.setParamArrays(totalParams);
-            ruleConfigModel.setMessage(verifyField.message());
+            try {
+                ruleConfigModel.setMessage(new String(verifyField.message().getBytes("GBK")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             ruleConfigModel.setCheckRule(verifyField.rule());
             String paramNames = Arrays.stream(verifyField.names()).reduce((s, s2) -> s + "," + s2).orElse("");
             ruleConfigModel.setParamName(paramNames);

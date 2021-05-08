@@ -1,5 +1,7 @@
 package cn.myiml.theims.core.rule.load;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,6 +17,15 @@ public interface LoadVerifyRule<E> {
      * @return
      */
     ConcurrentHashMap<String,List<E>> loadRule(String routeName);
+
+
+    /**
+     * 根据路径和对象查询
+     * @param routeName 路径
+     * @param object 其他对象
+     * @return
+     */
+    ConcurrentHashMap<String,List<E>> loadRule(String routeName, Object object);
 
 
     /**

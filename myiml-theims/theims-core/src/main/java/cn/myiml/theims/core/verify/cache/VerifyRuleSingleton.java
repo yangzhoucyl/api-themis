@@ -5,6 +5,7 @@ import cn.myiml.theims.core.rule.load.LoadVerifyRule;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.SneakyThrows;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -49,12 +50,20 @@ public class VerifyRuleSingleton {
 
 
     @SneakyThrows
-    public List<VerifyRulesConfigModel> getVal(String key, LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule){
-       return cache.get(key, () -> addCache(key, loadVerifyRule));
+    public List<VerifyRulesConfigModel> getVal(String key, ProceedingJoinPoint joinPoint,LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule){
+       return cache.get(key, () -> addCache(key,joinPoint, loadVerifyRule));
     }
 
     public List<VerifyRulesConfigModel> addCache(String route, LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule){
         List<VerifyRulesConfigModel> rulesConfigModels = loadVerifyRule.loadRule(route).get(route);
+        if (rulesConfigModels == null){
+            return new ArrayList<>();
+        }
+        return rulesConfigModels;
+    }
+
+    public List<VerifyRulesConfigModel> addCache(String route, ProceedingJoinPoint joinPoint, LoadVerifyRule<VerifyRulesConfigModel> loadVerifyRule){
+        List<VerifyRulesConfigModel> rulesConfigModels = loadVerifyRule.loadRule(route ,joinPoint).get(route);
         if (rulesConfigModels == null){
             return new ArrayList<>();
         }
